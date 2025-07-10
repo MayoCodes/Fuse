@@ -71,19 +71,30 @@
         .word-card {
             background: linear-gradient(135deg, #2a2a2a 0%, #3a3a3a 100%);
             color: #ffffff;
-            padding: 50px 20px;
-            border-radius: 15px;
-            margin: 20px 0;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.1);
-            min-height: 200px;
+            padding: 80px 30px;
+            border-radius: 20px;
+            margin: 30px 0;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 0 2px rgba(255,255,255,0.15);
+            min-height: 300px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.2rem;
+            font-size: 3rem;
             font-weight: 300;
             text-transform: uppercase;
-            letter-spacing: 4px;
-            border: 2px solid rgba(255,255,255,0.1);
+            letter-spacing: 6px;
+            border: 3px solid rgba(255,255,255,0.2);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .word-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 15px 45px rgba(0,0,0,0.6), 0 0 0 2px rgba(255,255,255,0.25);
+        }
+
+        .word-card:active {
+            transform: scale(0.98);
         }
 
         .timer {
@@ -136,15 +147,18 @@
         }
 
         .score {
-            font-size: 1.8rem;
-            margin: 20px 0;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 15px 25px;
-            border-radius: 25px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
+            font-size: 1rem;
+            margin: 8px 0;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 15px;
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.1);
             font-weight: 300;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
+            opacity: 0.7;
+            display: inline-block;
+            margin-right: 10px;
         }
 
         .instructions {
@@ -157,63 +171,6 @@
             line-height: 1.8;
             border: 1px solid rgba(255,255,255,0.1);
             font-weight: 300;
-        }
-
-        .tilt-demo {
-            display: flex;
-            justify-content: space-around;
-            margin: 20px 0;
-            gap: 20px;
-        }
-
-        .tilt-example {
-            text-align: center;
-            flex: 1;
-        }
-
-        .phone-demo {
-            width: 70px;
-            height: 40px;
-            background: #ffffff;
-            border: 2px solid #ccc;
-            border-radius: 8px;
-            margin: 0 auto 10px;
-            position: relative;
-            transition: transform 0.3s ease;
-        }
-
-        .phone-demo::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 50px;
-            height: 30px;
-            background: #333;
-            border-radius: 4px;
-        }
-
-        .phone-demo.tilt-down {
-            transform: rotateX(25deg);
-        }
-
-        .phone-demo.tilt-up {
-            transform: rotateX(-25deg);
-        }
-
-        .curved-arrow {
-            font-size: 2rem;
-            margin: 5px 0;
-            line-height: 1;
-        }
-
-        .curved-arrow.down {
-            color: #4CAF50;
-        }
-
-        .curved-arrow.up {
-            color: #ff6b6b;
         }
 
         .btn {
@@ -241,21 +198,6 @@
             transform: translateY(0);
         }
 
-        .tilt-indicator {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            font-size: 0.9rem;
-            background: rgba(0,0,0,0.8);
-            color: #ffffff;
-            padding: 10px 20px;
-            border-radius: 20px;
-            z-index: 1000;
-            border: 1px solid rgba(255,255,255,0.2);
-            backdrop-filter: blur(10px);
-            font-weight: 300;
-        }
-
         .eliminated {
             background: linear-gradient(135deg, #3a1a1a 0%, #2a1414 100%);
             color: #ff6b6b;
@@ -270,23 +212,6 @@
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.02); }
-        }
-
-        .winner {
-            background: linear-gradient(135deg, #1a3a1a 0%, #142a14 100%);
-            color: #6bff6b;
-            padding: 40px 20px;
-            border-radius: 15px;
-            margin: 20px 0;
-            font-size: 1.3rem;
-            animation: celebrate 2s infinite;
-            border: 1px solid rgba(107,255,107,0.3);
-            font-weight: 300;
-        }
-        @keyframes celebrate {
-            0%, 100% { transform: rotate(0deg) scale(1); }
-            25% { transform: rotate(1deg) scale(1.02); }
-            75% { transform: rotate(-1deg) scale(1.02); }
         }
 
         .setup-input {
@@ -351,19 +276,16 @@
             }
             
             .word-card {
-                min-height: 120px;
-                font-size: 2rem;
-                margin: 15px 0;
+                min-height: 200px;
+                font-size: 2.5rem;
+                margin: 20px 0;
+                padding: 60px 25px;
             }
             
             .instructions {
                 padding: 15px;
                 font-size: 0.9rem;
                 margin: 15px 0;
-            }
-            
-            .tilt-demo {
-                gap: 30px;
             }
         }
     </style>
@@ -378,22 +300,13 @@
                 <p>• Enter number of pairs playing (each pair = 2 players)</p>
                 <p>• Players sit in pairs diagonally across from each other</p>
                 <p>• Hold phone on forehead, partner gives clues</p>
+                <p>• <strong>TAP the word</strong> to skip to next word</p>
                 <p>• Pass phone around circle until timer ends</p>
                 <p>• Pair holding phone when timer ends = ELIMINATED!</p>
                 
-                <div class="tilt-demo">
-                    <div class="tilt-example">
-                        <div class="phone-demo tilt-down"></div>
-                        <div class="curved-arrow down">⤵</div>
-                        <div style="font-size: 0.9rem; color: #4CAF50; font-weight: bold;">CORRECT</div>
-                        <div style="font-size: 0.8rem;">Tilt Down = Point!</div>
-                    </div>
-                    <div class="tilt-example">
-                        <div class="phone-demo tilt-up"></div>
-                        <div class="curved-arrow up">⤴</div>
-                        <div style="font-size: 0.9rem; color: #ff6b6b; font-weight: bold;">SKIP</div>
-                        <div style="font-size: 0.8rem;">Tilt Up = Skip Word</div>
-                    </div>
+                <div style="background: rgba(76, 175, 80, 0.1); padding: 15px; border-radius: 10px; margin: 15px 0; border: 1px solid rgba(76, 175, 80, 0.3);">
+                    <div style="font-size: 1.1rem; font-weight: bold; color: #4CAF50; margin-bottom: 5px;">🎯 Scoring</div>
+                    <div style="font-size: 0.9rem;">When your partner guesses correctly, just keep playing! Points are tracked automatically by time survived.</div>
                 </div>
             </div>
             <div class="install-tip">
@@ -408,7 +321,7 @@
                 <input type="number" id="timerInput" placeholder="Game timer in seconds" value="60" min="30" max="300">
             </div>
             <button class="btn" onclick="requestPermissions()">START GAME</button>
-            <p>Made by Rayan H</p>
+             <p>Made by Rayan H</p>
         </div>
 
         <div class="game-screen" id="permissionScreen">
@@ -423,13 +336,18 @@
             <button class="fullscreen-toggle" onclick="toggleFullscreen()">Fullscreen</button>
             <button class="timer-toggle" onclick="toggleTimer()">Show Timer</button>
             <div class="timer" id="timer">60</div>
-            <div class="score">Score: <span id="score">0</span></div>
-            <div class="score">Pairs Left: <span id="pairsRemaining">0</span></div>
-            <div class="word-card" id="wordCard">
+            
+            <div style="text-align: center; margin: 10px 0;">
+                <div class="score">Score: <span id="score">0</span></div>
+                <div class="score">Pairs Left: <span id="pairsRemaining">0</span></div>
+            </div>
+            
+            <div class="word-card" id="wordCard" onclick="tapToSkip()">
                 ELEPHANT
             </div>
-            <div class="tilt-indicator" id="tiltIndicator">
-                Tilt: Neutral
+            
+            <div style="text-align: center; margin: 20px 0; font-size: 0.9rem; opacity: 0.6;">
+                Tap anywhere on the word to skip
             </div>
         </div>
 
@@ -484,11 +402,6 @@
              'ZOMBIE', 'GHOST', 'PAJAMAS', 'SLAM DUNK', 'TICKLE', 'WINK', 'THINK', 'SNACK', 'MOP',
              'SKATEBOARD', 'BEG', 'NEWSPAPER'
         ];
-
-        let lastOrientation = { beta: 0, gamma: 0 };
-        let orientationThreshold = 25;
-        let lastTiltAction = 0;
-        let tiltCooldown = 1000;
 
         function requestPermissions() {
             const pairCount = parseInt(document.getElementById('playerInput').value) || 2;
@@ -548,8 +461,6 @@
             gameState.initialTime = timerValue;
             gameState.totalPairs = pairCount;
             gameState.eliminatedPairs = 0;
-            
-            window.addEventListener('deviceorientation', handleOrientation);
             
             initializeAudio();
             
@@ -710,6 +621,7 @@
                 return;
             }
             
+            // Try browser fullscreen first
             if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.mozFullScreenElement && !document.msFullscreenElement) {
                 const elem = document.documentElement;
                 if (elem.requestFullscreen) {

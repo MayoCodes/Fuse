@@ -48,6 +48,10 @@
         .game-screen.active {
             display: block;
         }
+        
+        #gameScreen.active {
+            cursor: pointer;
+        }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -82,17 +86,7 @@
             text-transform: uppercase;
             letter-spacing: 6px;
             border: 3px solid rgba(255,255,255,0.2);
-            cursor: pointer;
             transition: all 0.2s ease;
-        }
-
-        .word-card:hover {
-            transform: scale(1.02);
-            box-shadow: 0 15px 45px rgba(0,0,0,0.6), 0 0 0 2px rgba(255,255,255,0.25);
-        }
-
-        .word-card:active {
-            transform: scale(0.98);
         }
 
         .timer {
@@ -142,6 +136,7 @@
         .timer-toggle:hover, .fullscreen-toggle:hover {
             background: rgba(255,255,255,0.2);
             transform: translateY(-1px);
+            cursor: pointer;
         }
 
         .score {
@@ -286,7 +281,7 @@
                 <p>Enter number of pairs playing (each pair = 2 players)</p>
                 <p>Players sit in pairs diagonally across from each other</p>
                 <p>Hold phone on forehead, partner gives clues</p>
-                <p><strong>TAP the word</strong> to change to next word</p>
+                <p><strong>TAP ANYWHERE on screen</strong> to change to next word</p>
                 <p>Pass phone around circle until timer ends</p>
                 <p>Pair holding phone when timer ends = ELIMINATED!</p>
                 
@@ -324,8 +319,8 @@
                 ELEPHANT
             </div>
             
-            <div style="text-align: center; margin: 20px 0; font-size: 0.9rem; opacity: 0.6;">
-                Tap anywhere on the word to change it
+            <div style="text-align: center; margin: 20px 0; font-size: 1rem; opacity: 0.8; background: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px;">
+                TAP ANYWHERE ON SCREEN TO CHANGE WORD
             </div>
         </div>
 
@@ -468,8 +463,8 @@
             shuffleArray(words);
             showNextWord();
             
-            const wordCard = document.getElementById('wordCard');
-            wordCard.addEventListener('click', tapToSkip);
+            const gameScreen = document.getElementById('gameScreen');
+            gameScreen.addEventListener('click', tapToSkip);
         }
 
         function startTicking() {
@@ -517,8 +512,14 @@
             }, 1000);
         }
 
-        function tapToSkip() {
+        function tapToSkip(event) {
             if (!gameState.isGameActive) return;
+            
+            if (event.target.classList.contains('fullscreen-toggle') || 
+                event.target.classList.contains('timer-toggle')) {
+                return;
+            }
+            
             playBeep(400, 150);
             showRandomWord();
         }

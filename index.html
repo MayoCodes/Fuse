@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fuse - Charades Game</title>
-    <!--Made By Rayan Hossain - Inspired by Heads Up and Outburst-->
     <style>
         * {
             margin: 0;
@@ -86,8 +85,8 @@
         }
 
         .timer-toggle {
-            position: absolute;
-            top: 20px;
+            position: fixed;
+            bottom: 20px;
             right: 20px;
             background: rgba(255,255,255,0.1);
             border: 1px solid rgba(255,255,255,0.2);
@@ -98,6 +97,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
             backdrop-filter: blur(10px);
+            z-index: 1001;
         }
         .timer-toggle:hover {
             background: rgba(255,255,255,0.2);

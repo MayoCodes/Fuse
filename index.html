@@ -13,8 +13,8 @@
     <meta name="theme-color" content="#1a1a1a">
     
     <!-- App Icons -->
-    <link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==">
-    <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==">
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiByeD0iMjQiIGZpbGw9IiMxYTFhMWEiLz4KPHRleHQgeD0iOTYiIHk9IjEwNCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjQ4IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+RlVTRTwvdGV4dD4KPHN2Zz4=">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiByeD0iMjQiIGZpbGw9IiMxYTFhMWEiLz4KPHRleHQgeD0iOTYiIHk9IjEwNCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjQ4IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+RlVTRTwvdGV4dD4KPHN2Zz4=">
     
     <!-- Web App Manifest -->
     <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkZ1c2UgLSBDaGFyYWRlcyBHYW1lIiwKICAic2hvcnRfbmFtZSI6ICJGdXNlIiwKICAiZGlzcGxheSI6ICJmdWxsc2NyZWVuIiwKICAib3JpZW50YXRpb24iOiAicG9ydHJhaXQiLAogICJ0aGVtZV9jb2xvciI6ICIjMWExYTFhIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjMWExYTFhIiwKICAic3RhcnRfdXJsIjogIi8iLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJkYXRhOmltYWdlL3BuZztiYXNlNjQsaVZCT1J3MEtHZ29BQUFBTlNVaEVVZ0FBQUVCQUFBQUJDQVLBQUFGZFNTSKFBQUFBRFVSZFJGMDI5TmsrTTlRRHdBRGhnR0FXalI5YXdBQUFBQkpSVTVFcmtKZ2dnPT0iLAogICAgICAic2l6ZXMiOiAiMTkyeDE5MiIsCiAgICAgICJ0eXBlIjogImltYWdlL3BuZyIKICAgIH0KICBdCn0=">
@@ -408,7 +408,7 @@
                 <input type="number" id="timerInput" placeholder="Game timer in seconds" value="60" min="30" max="300">
             </div>
             <button class="btn" onclick="requestPermissions()">START GAME</button>
-            <p>Made by RH</p>
+            <p>Made by Rayan H</p>
         </div>
 
         <div class="game-screen" id="permissionScreen">
@@ -710,7 +710,6 @@
                 return;
             }
             
-            // Try browser fullscreen first
             if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.mozFullScreenElement && !document.msFullscreenElement) {
                 const elem = document.documentElement;
                 if (elem.requestFullscreen) {
@@ -857,11 +856,16 @@
             if (fullscreenBtn) {
                 if (isPWA) {
                     fullscreenBtn.textContent = '📱 PWA Mode';
-                    fullscreenBtn.style.background = 'linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%)';
+                    fullscreenBtn.style.background = 'rgba(255,255,255,0.1)';
+                    fullscreenBtn.style.border = '1px solid rgba(255,255,255,0.2)';
                 } else if (isFullscreen) {
                     fullscreenBtn.textContent = 'Exit Fullscreen';
+                    fullscreenBtn.style.background = '';
+                    fullscreenBtn.style.border = '';
                 } else {
                     fullscreenBtn.textContent = 'Fullscreen';
+                    fullscreenBtn.style.background = '';
+                    fullscreenBtn.style.border = '';
                 }
             }
         }

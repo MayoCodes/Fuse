@@ -281,7 +281,7 @@
                 <p>Enter number of pairs playing (each pair = 2 players)</p>
                 <p>Players sit in pairs diagonally across from each other</p>
                 <p>Hold phone on forehead, partner gives clues</p>
-                <p><strong>TAP ANYWHERE on screen</strong> to change to next word</p>
+                <p><strong>TAP ANYWHERE on phone</strong> to change to next word</p>
                 <p>Pass phone around circle until timer ends</p>
                 <p>Pair holding phone when timer ends = ELIMINATED!</p>
                 
@@ -320,7 +320,7 @@
             </div>
             
             <div style="text-align: center; margin: 20px 0; font-size: 1rem; opacity: 0.8; background: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px;">
-                TAP ANYWHERE ON SCREEN TO CHANGE WORD
+                TAP ANYWHERE ON PHONE TO CHANGE WORD
             </div>
         </div>
 
@@ -463,8 +463,7 @@
             shuffleArray(words);
             showNextWord();
             
-            const gameScreen = document.getElementById('gameScreen');
-            gameScreen.addEventListener('click', tapToSkip);
+            document.addEventListener('click', tapToSkip);
         }
 
         function startTicking() {
@@ -490,6 +489,7 @@
             clearInterval(gameState.timerInterval);
             clearTimeout(gameState.tickInterval);
             gameState.isGameActive = false;
+            document.removeEventListener('click', tapToSkip);
             playBeep(400, 1000);
             
             gameState.eliminatedPairs++;

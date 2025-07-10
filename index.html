@@ -4,6 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fuse - Charades Game</title>
+    
+    <!-- PWA Meta Tags for Fullscreen -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Fuse">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#1a1a1a">
+    
+    <!-- App Icons -->
+    <link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==">
+    <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==">
+    
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkZ1c2UgLSBDaGFyYWRlcyBHYW1lIiwKICAic2hvcnRfbmFtZSI6ICJGdXNlIiwKICAiZGlzcGxheSI6ICJmdWxsc2NyZWVuIiwKICAib3JpZW50YXRpb24iOiAicG9ydHJhaXQiLAogICJ0aGVtZV9jb2xvciI6ICIjMWExYTFhIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjMWExYTFhIiwKICAic3RhcnRfdXJsIjogIi8iLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJkYXRhOmltYWdlL3BuZztiYXNlNjQsaVZCT1J3MEtHZ29BQUFBTlNVaEVVZ0FBQUVCQUFBQUJDQVLBQUFGZFNTSKFBQUFBRFVSZFJGMDI5TmsrTTlRRHdBRGhnR0FXalI5YXdBQUFBQkpSVTVFcmtKZ2dnPT0iLAogICAgICAic2l6ZXMiOiAiMTkyeDE5MiIsCiAgICAgICJ0eXBlIjogImltYWdlL3BuZyIKICAgIH0KICBdCn0=">
     <style>
         * {
             margin: 0;
@@ -309,6 +323,49 @@
             border: 1px solid rgba(255, 193, 7, 0.3);
             backdrop-filter: blur(10px);
         }
+
+        .install-tip {
+            background: rgba(76, 175, 80, 0.15);
+            color: #4CAF50;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-size: 0.9rem;
+            font-weight: 300;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        /* PWA Landscape optimizations */
+        @media screen and (orientation: landscape) and (display-mode: standalone),
+               screen and (orientation: landscape) and (display-mode: fullscreen) {
+            .container {
+                max-width: 90vw;
+                padding: 10px;
+            }
+            
+            .title {
+                font-size: 2.5rem;
+                margin-bottom: 15px;
+            }
+            
+            .word-card {
+                min-height: 120px;
+                font-size: 2rem;
+                margin: 15px 0;
+            }
+            
+            .instructions {
+                padding: 15px;
+                font-size: 0.9rem;
+                margin: 15px 0;
+            }
+            
+            .tilt-demo {
+                gap: 30px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -338,6 +395,9 @@
                         <div style="font-size: 0.8rem;">Tilt Up = Skip Word</div>
                     </div>
                 </div>
+            </div>
+            <div class="install-tip">
+                💡 <strong>Pro Tip:</strong> For the best fullscreen landscape experience, add Fuse to your home screen! Tap the Fullscreen button for instructions.
             </div>
             <div class="setup-input">
                 <label style="display: block; margin-bottom: 8px; font-size: 1rem; font-weight: 400;">Number of Pairs:</label>
@@ -641,8 +701,17 @@
         }
 
         function toggleFullscreen() {
+            // Check if we're in PWA mode (added to home screen)
+            const isPWA = window.navigator.standalone || window.matchMedia('(display-mode: fullscreen)').matches || window.matchMedia('(display-mode: standalone)').matches;
+            
+            if (isPWA) {
+                // Already in fullscreen PWA mode
+                alert('You\'re already in fullscreen mode! 🎉');
+                return;
+            }
+            
+            // Try browser fullscreen first
             if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.mozFullScreenElement && !document.msFullscreenElement) {
-                // Enter fullscreen
                 const elem = document.documentElement;
                 if (elem.requestFullscreen) {
                     elem.requestFullscreen();
@@ -652,8 +721,9 @@
                     elem.mozRequestFullScreen();
                 } else if (elem.msRequestFullscreen) {
                     elem.msRequestFullscreen();
+                } else {
+                    showInstallInstructions();
                 }
-                document.querySelector('.fullscreen-toggle').textContent = 'Exit Fullscreen';
             } else {
                 // Exit fullscreen
                 if (document.exitFullscreen) {
@@ -665,7 +735,19 @@
                 } else if (document.msExitFullscreen) {
                     document.msExitFullscreen();
                 }
-                document.querySelector('.fullscreen-toggle').textContent = 'Fullscreen';
+            }
+        }
+
+        function showInstallInstructions() {
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            const isAndroid = /Android/.test(navigator.userAgent);
+            
+            if (isIOS) {
+                alert('For true fullscreen: Tap the Share button (📤) at the bottom → "Add to Home Screen" → Then open Fuse from your home screen for landscape fullscreen gaming!');
+            } else if (isAndroid) {
+                alert('For true fullscreen: Tap the menu (⋮) → "Add to Home screen" or "Install app" → Then open Fuse from your home screen for landscape fullscreen gaming!');
+            } else {
+                alert('For the best experience, install this app from your browser menu!');
             }
         }
 
@@ -748,19 +830,57 @@
                 }
             }, { once: true });
 
+            // Check PWA status immediately
+            checkPWAStatus();
+
             // Handle all fullscreen change events for different browsers
             document.addEventListener('fullscreenchange', updateFullscreenButton);
             document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
             document.addEventListener('mozfullscreenchange', updateFullscreenButton);
             document.addEventListener('MSFullscreenChange', updateFullscreenButton);
+
+            // Listen for orientation changes in PWA mode
+            window.addEventListener('orientationchange', () => {
+                setTimeout(checkPWAStatus, 500);
+            });
+
+            // Listen for display mode changes
+            window.matchMedia('(display-mode: standalone)').addEventListener('change', checkPWAStatus);
+            window.matchMedia('(display-mode: fullscreen)').addEventListener('change', checkPWAStatus);
         });
 
         function updateFullscreenButton() {
             const fullscreenBtn = document.querySelector('.fullscreen-toggle');
+            const isPWA = window.navigator.standalone || window.matchMedia('(display-mode: fullscreen)').matches || window.matchMedia('(display-mode: standalone)').matches;
             const isFullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+            
             if (fullscreenBtn) {
-                fullscreenBtn.textContent = isFullscreen ? 'Exit Fullscreen' : 'Fullscreen';
+                if (isPWA) {
+                    fullscreenBtn.textContent = '📱 PWA Mode';
+                    fullscreenBtn.style.background = 'linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%)';
+                } else if (isFullscreen) {
+                    fullscreenBtn.textContent = 'Exit Fullscreen';
+                } else {
+                    fullscreenBtn.textContent = 'Fullscreen';
+                }
             }
+        }
+
+        // Check PWA status on load
+        function checkPWAStatus() {
+            const isPWA = window.navigator.standalone || window.matchMedia('(display-mode: fullscreen)').matches || window.matchMedia('(display-mode: standalone)').matches;
+            
+            if (isPWA) {
+                // Force landscape orientation in PWA mode
+                if (screen.orientation && screen.orientation.lock) {
+                    screen.orientation.lock('landscape').catch(() => {
+                        // Fallback if orientation lock fails
+                        console.log('Orientation lock not supported');
+                    });
+                }
+            }
+            
+            updateFullscreenButton();
         }
 
         let wakeLock = null;

@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fuse - Charades Game</title>
+    <!--Made By Rayan Hossain - Inspired by Heads Up and Outburst-->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d30 50%, #1a1a1a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px 0;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .game-screen {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+        .game-screen.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .title {
+            font-size: 3.5rem;
+            font-weight: 300;
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px rgba(255,255,255,0.3);
+            background: linear-gradient(45deg, #ffffff, #cccccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+        }
+
+        .word-card {
+            background: linear-gradient(135deg, #2a2a2a 0%, #3a3a3a 100%);
+            color: #ffffff;
+            padding: 50px 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.1);
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            font-weight: 300;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+
+        .timer {
+            font-size: 4rem;
+            font-weight: 200;
+            margin: 20px 0;
+            color: #ffffff;
+            text-shadow: 0 0 20px rgba(255,255,255,0.3);
+            display: none;
+        }
+        .timer.visible {
+            display: block;
+        }
+
+        .timer-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #ffffff;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        .timer-toggle:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-1px);
+        }
+
+        .score {
+            font-size: 1.8rem;
+            margin: 20px 0;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px 25px;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        .instructions {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            backdrop-filter: blur(15px);
+            font-size: 1rem;
+            line-height: 1.8;
+            border: 1px solid rgba(255,255,255,0.1);
+            font-weight: 300;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #4a4a4a 0%, #2a2a2a 100%);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 15px 30px;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 1.1rem;
+            font-weight: 400;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .btn:hover {
+            background: linear-gradient(135deg, #5a5a5a 0%, #3a3a3a 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+            border-color: rgba(255,255,255,0.3);
+        }
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .tilt-indicator {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            font-size: 0.9rem;
+            background: rgba(0,0,0,0.8);
+            color: #ffffff;
+            padding: 10px 20px;
+            border-radius: 20px;
+            z-index: 1000;
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            font-weight: 300;
+        }
+
+        .eliminated {
+            background: linear-gradient(135deg, #3a1a1a 0%, #2a1414 100%);
+            color: #ff6b6b;
+            padding: 40px 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-size: 1.3rem;
+            animation: pulse 1s infinite;
+            border: 1px solid rgba(255,107,107,0.3);
+            font-weight: 300;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .winner {
+            background: linear-gradient(135deg, #1a3a1a 0%, #142a14 100%);
+            color: #6bff6b;
+            padding: 40px 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-size: 1.3rem;
+            animation: celebrate 2s infinite;
+            border: 1px solid rgba(107,255,107,0.3);
+            font-weight: 300;
+        }
+        @keyframes celebrate {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(1deg) scale(1.02); }
+            75% { transform: rotate(-1deg) scale(1.02); }
+        }
+
+        .setup-input {
+            margin: 15px 0;
+        }
+        .setup-input input {
+            padding: 15px 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            font-size: 1.1rem;
+            width: 100%;
+            text-align: center;
+            background: rgba(255,255,255,0.1);
+            color: #ffffff;
+            backdrop-filter: blur(10px);
+            font-weight: 300;
+        }
+        .setup-input input::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+        .setup-input input:focus {
+            outline: none;
+            border-color: rgba(255,255,255,0.4);
+            background: rgba(255,255,255,0.15);
+        }
+
+        .permission-warning {
+            background: rgba(255, 193, 7, 0.15);
+            color: #ffc107;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-weight: 300;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="game-screen active" id="homeScreen">
+            <h1 class="title">FUSE</h1>
+            <div class="instructions">
+                <p><strong>How to Play:</strong></p>
+                <p>• Enter number of pairs playing (each pair = 2 players)</p>
+                <p>• Players sit in pairs diagonally across from each other</p>
+                <p>• Hold phone on forehead, partner gives clues</p>
+                <p>• Tilt DOWN for correct guess (point!)</p>
+                <p>• Tilt UP to skip word</p>
+                <p>• Pass phone around circle until timer ends</p>
+                <p>• Pair holding phone when timer ends = ELIMINATED!</p>
+            </div>
+            <div class="setup-input">
+                <label style="display: block; margin-bottom: 8px; font-size: 1rem; font-weight: 400;">Number of Pairs:</label>
+                <input type="number" id="playerInput" placeholder="Enter number of pairs" value="2" min="2" max="10">
+            </div>
+            <div class="setup-input">
+                <label style="display: block; margin-bottom: 8px; font-size: 1rem; font-weight: 400;">Timer Duration:</label>
+                <input type="number" id="timerInput" placeholder="Game timer in seconds" value="60" min="30" max="300">
+            </div>
+            <button class="btn" onclick="requestPermissions()">START GAME</button>
+            <p>Made by RH</p>
+        </div>
+
+        <div class="game-screen" id="permissionScreen">
+            <h2>Device Permissions Needed</h2>
+            <div class="permission-warning">
+                This game needs access to your device's motion sensors to detect tilting.
+            </div>
+            <button class="btn" onclick="setupGame()">Grant Permissions & Continue</button>
+        </div>
+
+        <div class="game-screen" id="gameScreen">
+            <button class="timer-toggle" onclick="toggleTimer()">Show Timer</button>
+            <div class="timer" id="timer">60</div>
+            <div class="score">Score: <span id="score">0</span></div>
+            <div class="score">Pairs Left: <span id="pairsRemaining">0</span></div>
+            <div class="word-card" id="wordCard">
+                ELEPHANT
+            </div>
+            <div class="tilt-indicator" id="tiltIndicator">
+                Tilt: Neutral
+            </div>
+        </div>
+
+        <div class="game-screen" id="resultsScreen">
+            <h2>Time's Up!</h2>
+            <div class="eliminated">
+                <h3>CURRENT PAIR ELIMINATED!</h3>
+                <p>Pass the phone to continue with remaining pairs</p>
+            </div>
+            <div class="score">Final Score: <span id="finalScore">0</span></div>
+            <div class="score">Pairs Remaining: <span id="pairsLeft">0</span></div>
+            <button class="btn" onclick="continueGame()">Continue Game</button>
+            <button class="btn" onclick="endGame()">End Game</button>
+        </div>
+
+        <div class="game-screen" id="winnerScreen">
+            <div class="winner">
+                <h2>🏆 WINNERS! 🏆</h2>
+                <p>Congratulations to the last remaining pair!</p>
+            </div>
+            <button class="btn" onclick="startNewGame()">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        let gameState = {
+            currentScreen: 'home',
+            score: 0,
+            timeLeft: 60,
+            initialTime: 60,
+            currentWordIndex: 0,
+            isGameActive: false,
+            timerInterval: null,
+            tickInterval: null,
+            audioContext: null,
+            eliminatedPairs: 0,
+            totalPairs: 0,
+            timerVisible: false
+        };
+
+        const words = [
+            'ELEPHANT', 'PIZZA', 'DANCING', 'SUPERHERO', 'BICYCLE', 'VAMPIRE',
+            'COOKING', 'AIRPLANE', 'MONKEY', 'SINGING', 'ROBOT', 'SWIMMING',
+            'DINOSAUR', 'MAGIC', 'FIREFIGHTER', 'BUTTERFLY', 'FISHING', 'CASTLE',
+            'PENGUIN', 'GUITAR', 'TREASURE', 'RAINBOW', 'DRIVING', 'CLOWN',
+            'SPACESHIP', 'READING', 'DOCTOR', 'JUMPING', 'LION', 'PAINTING',
+            'WIZARD', 'SANDWICH', 'RUNNING', 'DRAGON', 'TELEPHONE', 'SAILING',
+            'TIGER', 'BASKETBALL', 'PRINCESS', 'MOUNTAIN', 'FLYING', 'TEACHER',
+            'CROCODILE', 'GAMING', 'PIRATE', 'FLOWER', 'SKIING', 'DETECTIVE', 'SNOWBALL', 'ROOF',
+             'JUMPING', 'CIRCUS', 'BALLOON', 'KANGAROO', 'HIKING', 'FARMER', 'CANDY', 'VOLCANO', 
+             'ZOMBIE', 'GHOST', 'PAJAMAS', 'SLAM DUNK', 'TICKLE', 'WINK', 'THINK', 'SNACK', 'MOP',
+             'SKATEBOARD', 'BEG', 'NEWSPAPER'
+        ];
+
+        let lastOrientation = { beta: 0, gamma: 0 };
+        let orientationThreshold = 25;
+        let lastTiltAction = 0;
+        let tiltCooldown = 1000;
+
+        function requestPermissions() {
+            const pairCount = parseInt(document.getElementById('playerInput').value) || 2;
+            if (pairCount < 2) {
+                alert('Please enter at least 2 pairs (minimum 4 players)');
+                return;
+            }
+            showScreen('permissionScreen');
+        }
+
+        function setupGame() {
+            if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+                DeviceOrientationEvent.requestPermission()
+                    .then(permissionState => {
+                        if (permissionState === 'granted') {
+                            initializeGame();
+                        } else {
+                            alert('Motion permission denied. Game may not work properly.');
+                            initializeGame();
+                        }
+                    })
+                    .catch(console.error);
+            } else {
+                initializeGame();
+            }
+        }
+
+        function playBeep(frequency = 800, duration = 200) {
+            if (!gameState.audioContext) return;
+            
+            const oscillator = gameState.audioContext.createOscillator();
+            const gainNode = gameState.audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(gameState.audioContext.destination);
+            
+            oscillator.frequency.value = frequency;
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0.3, gameState.audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, gameState.audioContext.currentTime + duration / 1000);
+            
+            oscillator.start(gameState.audioContext.currentTime);
+            oscillator.stop(gameState.audioContext.currentTime + duration / 1000);
+        }
+
+        function initializeGame() {
+            const timerValue = parseInt(document.getElementById('timerInput').value) || 60;
+            const pairCount = parseInt(document.getElementById('playerInput').value) || 2;
+            
+            if (pairCount < 2) {
+                alert('Please enter at least 2 pairs (minimum 4 players)');
+                return;
+            }
+            
+            gameState.timeLeft = timerValue;
+            gameState.initialTime = timerValue;
+            gameState.totalPairs = pairCount;
+            gameState.eliminatedPairs = 0;
+            
+            window.addEventListener('deviceorientation', handleOrientation);
+            
+            initializeAudio();
+            
+            startRound();
+        }
+
+        function playTick() {
+            if (!gameState.audioContext) return;
+            
+            const oscillator = gameState.audioContext.createOscillator();
+            const gainNode = gameState.audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(gameState.audioContext.destination);
+            
+            oscillator.frequency.value = 1200;
+            oscillator.type = 'square';
+            
+            gainNode.gain.setValueAtTime(0.4, gameState.audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, gameState.audioContext.currentTime + 0.1);
+            
+            oscillator.start(gameState.audioContext.currentTime);
+            oscillator.stop(gameState.audioContext.currentTime + 0.1);
+        }
+
+        function initializeAudio() {
+            try {
+                gameState.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            } catch (e) {
+                console.log('Audio context not supported');
+            }
+        }
+
+        function startRound() {
+            gameState.score = 0;
+            gameState.currentWordIndex = 0;
+            gameState.isGameActive = true;
+            
+            updateDisplay();
+            showScreen('gameScreen');
+            startTimer();
+            startTicking();
+            
+            shuffleArray(words);
+            showNextWord();
+        }
+
+        function startTicking() {
+            function scheduleNextTick() {
+                if (!gameState.isGameActive || gameState.timeLeft <= 0) return;
+                
+                const progress = 1 - (gameState.timeLeft / gameState.initialTime);
+                const minInterval = 100;
+                const maxInterval = 1000;
+                const currentInterval = maxInterval - (progress * (maxInterval - minInterval));
+                
+                gameState.tickInterval = setTimeout(() => {
+                    playTick();
+                    scheduleNextTick();
+                }, currentInterval);
+            }
+            
+            playTick();
+            scheduleNextTick();
+        }
+
+        function endRound() {
+            clearInterval(gameState.timerInterval);
+            clearTimeout(gameState.tickInterval);
+            gameState.isGameActive = false;
+            playBeep(400, 1000);
+            
+            gameState.eliminatedPairs++;
+            
+            if (gameState.totalPairs - gameState.eliminatedPairs <= 1) {
+                showScreen('winnerScreen');
+            } else {
+                showResults();
+            }
+        }
+
+        function startTimer() {
+            gameState.timerInterval = setInterval(() => {
+                gameState.timeLeft--;
+                updateTimer();
+                
+                if (gameState.timeLeft <= 0) {
+                    endRound();
+                }
+            }, 1000);
+        }
+
+        function showResults() {
+            document.getElementById('finalScore').textContent = gameState.score;
+            const pairsLeft = gameState.totalPairs - gameState.eliminatedPairs;
+            document.getElementById('pairsLeft').textContent = pairsLeft;
+            showScreen('resultsScreen');
+        }
+
+        function continueGame() {
+            const timerValue = parseInt(document.getElementById('timerInput').value) || 60;
+            gameState.timeLeft = timerValue;
+            gameState.initialTime = timerValue;
+            startRound();
+        }
+
+        function endGame() {
+            showScreen('winnerScreen');
+        }
+
+        function startNewGame() {
+            gameState.eliminatedPairs = 0;
+            showScreen('homeScreen');
+        }
+
+        function handleOrientation(event) {
+            if (!gameState.isGameActive) return;
+            
+            const now = Date.now();
+            if (now - lastTiltAction < tiltCooldown) return;
+            
+            const beta = event.beta;
+            const gamma = event.gamma;
+            
+            updateTiltIndicator(beta, gamma);
+            
+            if (beta > orientationThreshold) {
+                correctGuess();
+                lastTiltAction = now;
+            }
+            else if (beta < -orientationThreshold) {
+                skipWord();
+                lastTiltAction = now;
+            }
+        }
+
+        function toggleTimer() {
+            gameState.timerVisible = !gameState.timerVisible;
+            const timer = document.getElementById('timer');
+            const toggleButton = document.querySelector('.timer-toggle');
+            
+            if (gameState.timerVisible) {
+                timer.classList.add('visible');
+                toggleButton.textContent = 'Hide Timer';
+            } else {
+                timer.classList.remove('visible');
+                toggleButton.textContent = 'Show Timer';
+            }
+        }
+
+        function updateTiltIndicator(beta, gamma) {
+            const indicator = document.getElementById('tiltIndicator');
+            let status = 'Neutral';
+            
+            if (beta > orientationThreshold) {
+                status = 'DOWN (Correct!)';
+            } else if (beta < -orientationThreshold) {
+                status = 'UP (Skip)';
+            }
+            
+            indicator.textContent = `Tilt: ${status}`;
+        }
+
+        function correctGuess() {
+            gameState.score++;
+            playBeep(600, 200);
+            updateDisplay();
+            showNextWord();
+        }
+
+        function skipWord() {
+            playBeep(300, 200);
+            showNextWord();
+        }
+
+        function showNextWord() {
+            gameState.currentWordIndex = (gameState.currentWordIndex + 1) % words.length;
+            const wordCard = document.getElementById('wordCard');
+            wordCard.textContent = words[gameState.currentWordIndex];
+            
+            wordCard.style.transform = 'scale(0.8)';
+            wordCard.style.opacity = '0.5';
+            setTimeout(() => {
+                wordCard.style.transform = 'scale(1)';
+                wordCard.style.opacity = '1';
+            }, 100);
+        }
+
+        function updateDisplay() {
+            document.getElementById('score').textContent = gameState.score;
+            const remaining = gameState.totalPairs - gameState.eliminatedPairs;
+            document.getElementById('pairsRemaining').textContent = remaining;
+        }
+
+        function updateTimer() {
+            const timerElement = document.getElementById('timer');
+            timerElement.textContent = gameState.timeLeft;
+            
+            if (gameState.timeLeft <= 10) {
+                timerElement.style.color = '#ff6b6b';
+                timerElement.style.animation = 'pulse 1s infinite';
+            } else {
+                timerElement.style.color = '#ffffff';
+                timerElement.style.animation = 'none';
+            }
+        }
+
+        function showScreen(screenId) {
+            const screens = document.querySelectorAll('.game-screen');
+            screens.forEach(screen => screen.classList.remove('active'));
+            
+            document.getElementById(screenId).classList.add('active');
+            gameState.currentScreen = screenId;
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.addEventListener('click', () => {
+                if (gameState.audioContext && gameState.audioContext.state === 'suspended') {
+                    gameState.audioContext.resume();
+                }
+            }, { once: true });
+        });
+
+        let wakeLock = null;
+        async function requestWakeLock() {
+            try {
+                if ('wakeLock' in navigator) {
+                    wakeLock = await navigator.wakeLock.request('screen');
+                }
+            } catch (err) {
+                console.log('Wake lock not supported');
+            }
+        }
+
+        window.addEventListener('load', requestWakeLock);
+    </script>
+</body>
+</html>

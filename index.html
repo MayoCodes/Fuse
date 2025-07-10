@@ -86,7 +86,7 @@
 
         .timer-toggle {
             position: fixed;
-            bottom: 20px;
+            top: 70px;
             right: 20px;
             background: rgba(255,255,255,0.1);
             border: 1px solid rgba(255,255,255,0.2);
@@ -99,7 +99,24 @@
             backdrop-filter: blur(10px);
             z-index: 1001;
         }
-        .timer-toggle:hover {
+
+        .fullscreen-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #ffffff;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            z-index: 1001;
+        }
+
+        .timer-toggle:hover, .fullscreen-toggle:hover {
             background: rgba(255,255,255,0.2);
             transform: translateY(-1px);
         }
@@ -126,6 +143,63 @@
             line-height: 1.8;
             border: 1px solid rgba(255,255,255,0.1);
             font-weight: 300;
+        }
+
+        .tilt-demo {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            gap: 20px;
+        }
+
+        .tilt-example {
+            text-align: center;
+            flex: 1;
+        }
+
+        .phone-demo {
+            width: 70px;
+            height: 40px;
+            background: #ffffff;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            margin: 0 auto 10px;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .phone-demo::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 30px;
+            background: #333;
+            border-radius: 4px;
+        }
+
+        .phone-demo.tilt-down {
+            transform: rotateX(25deg);
+        }
+
+        .phone-demo.tilt-up {
+            transform: rotateX(-25deg);
+        }
+
+        .curved-arrow {
+            font-size: 2rem;
+            margin: 5px 0;
+            line-height: 1;
+        }
+
+        .curved-arrow.down {
+            color: #4CAF50;
+        }
+
+        .curved-arrow.up {
+            color: #ff6b6b;
         }
 
         .btn {
@@ -240,16 +314,30 @@
 <body>
     <div class="container">
         <div class="game-screen active" id="homeScreen">
+            <button class="fullscreen-toggle" onclick="toggleFullscreen()">Fullscreen</button>
             <h1 class="title">FUSE</h1>
             <div class="instructions">
                 <p><strong>How to Play:</strong></p>
                 <p>• Enter number of pairs playing (each pair = 2 players)</p>
                 <p>• Players sit in pairs diagonally across from each other</p>
                 <p>• Hold phone on forehead, partner gives clues</p>
-                <p>• Tilt DOWN for correct guess (point!)</p>
-                <p>• Tilt UP to skip word</p>
                 <p>• Pass phone around circle until timer ends</p>
                 <p>• Pair holding phone when timer ends = ELIMINATED!</p>
+                
+                <div class="tilt-demo">
+                    <div class="tilt-example">
+                        <div class="phone-demo tilt-down"></div>
+                        <div class="curved-arrow down">⤵</div>
+                        <div style="font-size: 0.9rem; color: #4CAF50; font-weight: bold;">CORRECT</div>
+                        <div style="font-size: 0.8rem;">Tilt Down = Point!</div>
+                    </div>
+                    <div class="tilt-example">
+                        <div class="phone-demo tilt-up"></div>
+                        <div class="curved-arrow up">⤴</div>
+                        <div style="font-size: 0.9rem; color: #ff6b6b; font-weight: bold;">SKIP</div>
+                        <div style="font-size: 0.8rem;">Tilt Up = Skip Word</div>
+                    </div>
+                </div>
             </div>
             <div class="setup-input">
                 <label style="display: block; margin-bottom: 8px; font-size: 1rem; font-weight: 400;">Number of Pairs:</label>
@@ -260,7 +348,6 @@
                 <input type="number" id="timerInput" placeholder="Game timer in seconds" value="60" min="30" max="300">
             </div>
             <button class="btn" onclick="requestPermissions()">START GAME</button>
-            <p>Made by RH</p>
         </div>
 
         <div class="game-screen" id="permissionScreen">
@@ -272,6 +359,7 @@
         </div>
 
         <div class="game-screen" id="gameScreen">
+            <button class="fullscreen-toggle" onclick="toggleFullscreen()">Fullscreen</button>
             <button class="timer-toggle" onclick="toggleTimer()">Show Timer</button>
             <div class="timer" id="timer">60</div>
             <div class="score">Score: <span id="score">0</span></div>
@@ -285,21 +373,22 @@
         </div>
 
         <div class="game-screen" id="resultsScreen">
-            <h2>Time's Up!</h2>
+            <h2>⏰ Time's Up!</h2>
             <div class="eliminated">
-                <h3>CURRENT PAIR ELIMINATED!</h3>
+                <h3>THE PAIR HOLDING THIS PHONE IS ELIMINATED!</h3>
                 <p>Pass the phone to continue with remaining pairs</p>
             </div>
-            <div class="score">Final Score: <span id="finalScore">0</span></div>
+            <div class="score">Round Score: <span id="finalScore">0</span></div>
             <div class="score">Pairs Remaining: <span id="pairsLeft">0</span></div>
             <button class="btn" onclick="continueGame()">Continue Game</button>
             <button class="btn" onclick="endGame()">End Game</button>
         </div>
 
         <div class="game-screen" id="winnerScreen">
-            <div class="winner">
-                <h2>🏆 WINNERS! 🏆</h2>
-                <p>Congratulations to the last remaining pair!</p>
+            <div class="eliminated">
+                <h2>⏰ TIME'S UP! ⏰</h2>
+                <p><strong>The pair holding this phone has been ELIMINATED!</strong></p>
+                <p style="margin-top: 15px; font-size: 1.1rem;">🏆 The remaining pairs are the WINNERS! 🏆</p>
             </div>
             <button class="btn" onclick="startNewGame()">Play Again</button>
         </div>
@@ -550,6 +639,20 @@
             }
         }
 
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log('Fullscreen not supported');
+                });
+                document.querySelector('.fullscreen-toggle').textContent = 'Exit Fullscreen';
+            } else {
+                document.exitFullscreen().catch(err => {
+                    console.log('Exit fullscreen failed');
+                });
+                document.querySelector('.fullscreen-toggle').textContent = 'Fullscreen';
+            }
+        }
+
         function updateTiltIndicator(beta, gamma) {
             const indicator = document.getElementById('tiltIndicator');
             let status = 'Neutral';
@@ -628,6 +731,13 @@
                     gameState.audioContext.resume();
                 }
             }, { once: true });
+
+            document.addEventListener('fullscreenchange', () => {
+                const fullscreenBtn = document.querySelector('.fullscreen-toggle');
+                if (fullscreenBtn) {
+                    fullscreenBtn.textContent = document.fullscreenElement ? 'Exit Fullscreen' : 'Fullscreen';
+                }
+            });
         });
 
         let wakeLock = null;

@@ -1,4 +1,4 @@
-# Fuse
+# Fuse - Charades Game
 
 [UPDATE: 12 CATEGORIES WITH 1400+ WORDS]
 

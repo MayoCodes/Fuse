@@ -30,7 +30,7 @@
             overflow-x: hidden;
         }
 
-        /* Disable scroll and zoom on game screen */
+        /* dsiable scroll and zoom on game screen */
         body.game-active {
             overflow: hidden;
             position: fixed;
@@ -51,7 +51,7 @@
             position: relative;
         }
 
-        /* Fullscreen game container */
+        /* game container */
         .container.fullscreen-game {
             position: fixed;
             top: 0;
@@ -77,7 +77,7 @@
             touch-action: manipulation;
         }
         
-        /* Fullscreen game screen */
+        /* fulscreen game screen */
         #gameScreen.fullscreen {
             position: fixed;
             top: 0;
@@ -132,7 +132,7 @@
             overflow: hidden;
         }
 
-        /* Swipe feedback animations */
+        /* swipe animations */
         .word-card.swipe-right {
             transform: translateX(20px);
             background: linear-gradient(135deg, #2a4a2a 0%, #3a5a3a 100%);
@@ -145,7 +145,7 @@
             border-color: #f44336;
         }
 
-        /* Fullscreen word card */
+        /*  word card */
         .word-card.fullscreen {
             position: fixed;
             top: 0;
@@ -173,7 +173,7 @@
             display: block;
         }
 
-        /* Position timer for fullscreen */
+        /*  timer for fullscreen */
         .timer.fullscreen {
             position: fixed;
             top: 30px;
@@ -238,7 +238,7 @@
             z-index: 1001;
         }
 
-        /* Position stats for fullscreen */
+        /*  stats for fullscreen */
         .game-stats.fullscreen {
             position: fixed;
             top: 20px;
@@ -374,7 +374,7 @@
             font-style: italic;
         }
 
-        /* Swipe instruction for fullscreen */
+        /*  instruction for fullscreen */
         .swipe-instruction {
             position: fixed;
             bottom: 30px;
@@ -391,7 +391,7 @@
             max-width: 300px;
         }
 
-        /* Statistics screen styles */
+        /*  screen styles */
         .stats-container {
             max-width: 600px;
             margin: 0 auto;
@@ -426,7 +426,7 @@
             margin-top: 5px;
         }
 
-        /* Orientation warning */
+        /* turn phone warning */
         .orientation-warning {
             position: fixed;
             top: 0;
@@ -872,10 +872,10 @@
         function enterFullscreenGame() {
             gameState.isFullscreenGame = true;
             
-            // Add body classes to disable scroll and zoom
+            // uses classes to disable scroll and zoom
             document.body.classList.add('game-active');
             
-            // Make game screen fullscreen
+            // makes game screen fullscreen
             const gameScreen = document.getElementById('gameScreen');
             const wordCard = document.getElementById('wordCard');
             const timer = document.getElementById('timer');
@@ -894,7 +894,7 @@
                 swipeInstruction.classList.add('tap-instruction');
             }
             
-            // Force orientation and check it
+            // forceOrientation cuz sigma
             forceOrientation();
             checkOrientation();
         }
@@ -902,10 +902,10 @@
         function exitFullscreenGame() {
             gameState.isFullscreenGame = false;
             
-            // Remove body classes
+            // get rid of  body classes
             document.body.classList.remove('game-active');
             
-            // Remove fullscreen classes
+            // get rid of fullscreen classes
             const gameScreen = document.getElementById('gameScreen');
             const wordCard = document.getElementById('wordCard');
             const timer = document.getElementById('timer');
@@ -965,7 +965,7 @@
             gameState.totalPairs = pairCount;
             gameState.eliminatedPairs = 0;
             
-            // Reset game-wide stats only at the start of a new game
+            // resetting game-wide stats at strart
             if (gameState.gameStats.totalRounds === 0) {
                 gameState.gameStats = {
                     totalRounds: 0,
@@ -995,7 +995,7 @@
             gameState.isGameActive = true;
             gameState.currentWordStartTime = Date.now();
             
-            // Reset round stats
+            // resetting round stats
             gameState.roundStats = {
                 wordsAttempted: 0,
                 correctWords: 0,
@@ -1011,12 +1011,11 @@
             startTicking();
             showNextWord();
             
-            // Remove old event listeners
+            // re add event listners
             document.removeEventListener('touchstart', handleTouchStart);
             document.removeEventListener('touchmove', handleTouchMove);
             document.removeEventListener('touchend', handleTouchEnd);
             
-            // Add new event listeners for swipe
             document.addEventListener('touchstart', handleTouchStart, { passive: false });
             document.addEventListener('touchmove', handleTouchMove, { passive: false });
             document.addEventListener('touchend', handleTouchEnd, { passive: false });
@@ -1025,7 +1024,7 @@
         function handleTouchStart(e) {
             if (!gameState.isGameActive || !gameState.isFullscreenGame) return;
             
-            // Allow touch on control buttons
+            // check touch on buttons
             if (e.target.classList.contains('fullscreen-toggle') || 
                 e.target.classList.contains('timer-toggle')) {
                 return;
@@ -1039,7 +1038,7 @@
         function handleTouchMove(e) {
             if (!gameState.isGameActive || !gameState.isFullscreenGame) return;
             
-            // Allow touch on control buttons
+            // let touch on control buttons
             if (e.target.classList.contains('fullscreen-toggle') || 
                 e.target.classList.contains('timer-toggle')) {
                 return;
@@ -1052,7 +1051,7 @@
             const deltaX = currentX - gameState.touchStartX;
             const deltaY = Math.abs(currentY - gameState.touchStartY);
             
-            // Only show swipe feedback if horizontal movement is significant
+            //only show when swipe is "purposeful" enough ig
             if (Math.abs(deltaX) > 20 && deltaY < 50) {
                 const wordCard = document.getElementById('wordCard');
                 wordCard.classList.remove('swipe-left', 'swipe-right');
@@ -1068,7 +1067,7 @@
         function handleTouchEnd(e) {
             if (!gameState.isGameActive || !gameState.isFullscreenGame) return;
             
-            // Allow touch on control buttons
+            // allows touch on control buttons
             if (e.target.classList.contains('fullscreen-toggle') || 
                 e.target.classList.contains('timer-toggle')) {
                 return;
@@ -1082,12 +1081,12 @@
             
             const wordCard = document.getElementById('wordCard');
             
-            // Remove swipe feedback
+            // removes swipe feedback
             setTimeout(() => {
                 wordCard.classList.remove('swipe-left', 'swipe-right');
             }, 200);
             
-            // Check if it's a valid swipe (horizontal movement > threshold, vertical movement minimal, quick enough)
+            // checks if a valid swipe (horizontal movement > threshold, vertical movement minimal, quick enough)
             if (Math.abs(deltaX) > gameState.swipeThreshold && deltaY < 100 && timeDelta < 1000) {
                 if (deltaX > 0) {
                     // Swipe right - correct word
@@ -1115,7 +1114,7 @@
             gameState.skipCount++;
             gameState.roundStats.skippedWords++;
             
-            // Track word skips
+            // count word skips
             const word = currentWords[gameState.currentWordIndex];
             gameState.roundStats.wordSkips[word] = (gameState.roundStats.wordSkips[word] || 0) + 1;
             gameState.gameStats.allWordSkips[word] = (gameState.gameStats.allWordSkips[word] || 0) + 1;
@@ -1143,7 +1142,7 @@
             const wordCard = document.getElementById('wordCard');
             wordCard.textContent = currentWords[gameState.currentWordIndex];
             
-            // Animation
+            // animations stuff
             wordCard.style.transform = 'scale(0.95)';
             wordCard.style.opacity = '0.7';
             setTimeout(() => {
@@ -1225,18 +1224,17 @@
             clearTimeout(gameState.tickInterval);
             gameState.isGameActive = false;
             
-            // Record final word time if there was one
+
             if (gameState.roundStats.wordsAttempted > 0) {
                 recordWordTime(currentWords[gameState.currentWordIndex], 'timeout');
             }
             
-            // Update game stats
+            // update game stats
             gameState.gameStats.totalRounds++;
             gameState.gameStats.totalWords += gameState.roundStats.wordsAttempted;
             gameState.gameStats.totalCorrect += gameState.correctCount;
             gameState.gameStats.totalSkips += gameState.skipCount;
             
-            // Remove event listeners
             document.removeEventListener('touchstart', handleTouchStart);
             document.removeEventListener('touchmove', handleTouchMove);
             document.removeEventListener('touchend', handleTouchEnd);
@@ -1269,7 +1267,7 @@
         function calculateRoundStats() {
             const stats = gameState.roundStats;
             
-            // Most skipped word
+            // most skipped word
             let mostSkippedWord = '-';
             let maxSkips = 0;
             for (const [word, count] of Object.entries(stats.wordSkips)) {
@@ -1279,7 +1277,7 @@
                 }
             }
             
-            // Longest time on word
+            // longest time on word
             let longestWord = '-';
             let maxTime = 0;
             for (const entry of stats.wordTimes) {
@@ -1289,7 +1287,7 @@
                 }
             }
             
-            // Quickest correct word
+            // quickest correct word
             let quickestWord = '-';
             let minTime = Infinity;
             for (const entry of stats.wordTimes) {
@@ -1299,10 +1297,10 @@
                 }
             }
             
-            // Success rate
+            // success rate
             const successRate = stats.wordsAttempted > 0 ? Math.round((stats.correctWords / stats.wordsAttempted) * 100) : 0;
             
-            // Update display
+            // update the display
             document.getElementById('mostSkippedWord').textContent = mostSkippedWord;
             document.getElementById('mostSkippedCount').textContent = maxSkips + ' skips';
             document.getElementById('longestWord').textContent = longestWord;
@@ -1325,7 +1323,7 @@
         function calculateFinalStats() {
             const stats = gameState.gameStats;
             
-            // Champion words (most skipped overall)
+            // champion words = most skipped
             let championWords = '-';
             let maxSkips = 0;
             for (const [word, count] of Object.entries(stats.allWordSkips)) {
@@ -1335,10 +1333,9 @@
                 }
             }
             
-            // Overall success rate
             const overallSuccessRate = stats.totalWords > 0 ? Math.round((stats.totalCorrect / stats.totalWords) * 100) : 0;
             
-            // Update display
+            // update display
             document.getElementById('championWords').textContent = championWords;
             document.getElementById('overallSuccessRate').textContent = overallSuccessRate + '%';
             document.getElementById('totalRounds').textContent = stats.totalRounds;
@@ -1539,7 +1536,7 @@
                     wakeLock = await navigator.wakeLock.request('screen');
                 }
             } catch (err) {
-                console.log('Wake lock not supported');
+                console.log('Wake lock is not supported sorry!');
             }
         }
 
